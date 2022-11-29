@@ -285,15 +285,12 @@ public class ContentLayout extends FrameLayout {
                     mCurrentTaskType = TYPE_NEXT_PAGE_KEEP_POS;
                     mCurrentTaskPage = mEndPage;
                     getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage);
-                } else if (mEndPage == mPages) {
+                } else {
                     // Refresh last page
                     mCurrentTaskId = mIdGenerator.nextId();
                     mCurrentTaskType = TYPE_REFRESH_PAGE;
                     mCurrentTaskPage = mEndPage - 1;
                     getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage);
-                } else {
-                    Log.e(TAG, "Try to footer refresh, but mEndPage = " + mEndPage + ", mPages = " + mPages);
-                    mRefreshLayout.setFooterRefreshing(false);
                 }
             }
         };
@@ -704,9 +701,9 @@ public class ContentLayout extends FrameLayout {
 
                         int oldIndexStart = mCurrentTaskPage == mStartPage ? 0 : mPageDivider.get(mCurrentTaskPage - mStartPage - 1);
                         int oldIndexEnd = mPageDivider.get(mCurrentTaskPage - mStartPage);
-                        List<E> toRemove = mData.subList(oldIndexStart, oldIndexEnd);
-                        onRemoveData(toRemove);
-                        toRemove.clear();
+                        // List<E> toRemove = mData.subList(oldIndexStart, oldIndexEnd);
+                        // onRemoveData(toRemove);
+                        // toRemove.clear();
                         removeDuplicateData(data, oldIndexStart - CHECK_DUPLICATE_RANGE, oldIndexStart + CHECK_DUPLICATE_RANGE);
                         int newIndexStart = oldIndexStart;
                         int newIndexEnd = newIndexStart + data.size();

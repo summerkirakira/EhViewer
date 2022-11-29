@@ -108,6 +108,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.List;
 
+import static com.hippo.ehviewer.client.EhClient.METHOD_GET_GALLERY_LIST;
+
 public final class GalleryListScene extends BaseScene
         implements EasyRecyclerView.OnItemClickListener, EasyRecyclerView.OnItemLongClickListener,
         SearchBar.Helper, SearchBar.OnStateChangeListener, FastScroller.OnDragHandlerListener,
@@ -197,6 +199,8 @@ public final class GalleryListScene extends BaseScene
 
     private int mHideActionFabSlop;
     private boolean mShowActionFab = true;
+
+    private int nextPage = 0;
 
     @Nullable
     private final RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
@@ -1514,8 +1518,16 @@ public final class GalleryListScene extends BaseScene
                 mClient.execute(request);
             } else {
                 String url = mUrlBuilder.build();
+                if (nextPage != 0) {
+                    if (url.endsWith("/")) {
+                        url = url + "?next=" + nextPage;
+                    } else {
+                        url = url + "&next=" + nextPage;
+                    }
+
+                }
                 EhRequest request = new EhRequest();
-                request.setMethod(EhClient.METHOD_GET_GALLERY_LIST);
+                request.setMethod(METHOD_GET_GALLERY_LIST);
                 request.setCallback(new GetGalleryListListener(getContext(),
                         activity.getStageId(), getTag(), taskId));
                 request.setArgs(url);
@@ -1580,6 +1592,7 @@ public final class GalleryListScene extends BaseScene
                     ? R.string.gallery_list_empty_hit_subscription
                     : R.string.gallery_list_empty_hit);
             mHelper.setEmptyString(emptyString);
+            nextPage = result.nextPage;
             mHelper.onGetPageData(taskId, result.pages, result.nextPage, result.galleryInfoList);
         }
     }
